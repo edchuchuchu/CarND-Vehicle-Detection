@@ -1,4 +1,4 @@
-##Writeup Template
+## Writeup Template
 
 ---
 
@@ -21,18 +21,18 @@ The goals / steps of this project are the following:
 [video1]: ./project_output.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
+#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
 
 The file you're reading right now is the report.
 
-###Histogram of Oriented Gradients (HOG)
+### Histogram of Oriented Gradients (HOG)
 
-####1. Explain how to extract HOG features from the training images.
+#### 1. Explain how to extract HOG features from the training images.
 
 Using HOG function from skimage.feature to extraction HOG feature.
 And also extract color histogram and spatially binned color feature from the training images.
@@ -88,7 +88,7 @@ The following 2 images show the HOG image from vehicle and non-vehicle image.
 ![alt text][image1]
 ![alt text][image2]
 
-####2. Explain how you settled on your final choice of HOG parameters.
+#### 2. Explain how you settled on your final choice of HOG parameters.
 
 Here is the parameter I use for final result.
 ```python
@@ -112,7 +112,7 @@ Third, hog_channel. Since we already know all of the 3 channel of YCrCb are usef
 Fourth, spatial size and hist bins. At the beginning, I use 16x16 and 16 for my first try. But the accuracy isn't good enough.   
 Because it will ignore too much info from original 64x64 image. After little tweak, I use spatial=32x32 and bin=32.   
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features.
 
 Using LinearSVC from sklearn.svm and 3 features we extracted to treain the classifier.
 ```python
@@ -172,9 +172,9 @@ The accuracy rate for test dataset is 0.993. Looks like it traing well and not c
 We can use this trained classifier to continue.    
 
 
-###Sliding Window Search
+### Sliding Window Search
 
-####1. Describe how you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1. Describe how you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 Here is the function I use to search car.    
 ```python
@@ -255,7 +255,7 @@ That's the reason why SVC classifier can't identify the sky or cloud as non-vehi
 In order to solve this issue, I narrow the search the window to lower region only. It can save lots of search time and identify well.
 For the overlap, we define 2 cells/step and 8 pix/cell to overlap the search the search and also set scale factor to 1.5.
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Since the classifier works well on test dataset and test image. I kept the setting and use it.
     
@@ -266,11 +266,11 @@ Here is the search and draw box result for test image and heat map.
 
 ### Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video    
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video    
 Here's a [link to my video result](./project_output.mp4)
 
 
-####2. Describe how you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+#### 2. Describe how you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 From the above we can found there are lots overlap box on the same car.    
 We use label heat map to integrated the overlap boxes into 1 box and use threshold=1 to filter the false positive.
@@ -301,9 +301,9 @@ Above image show it success integrated several boxed into 1 box.
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 I spent most of time on tune the HOG parameter and try to find the best setup to perform the result.    
 And then the search region and label threshold part, since I want to filter the false positive and keep the vehicle detection box.    
