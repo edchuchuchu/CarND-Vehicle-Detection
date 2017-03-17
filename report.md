@@ -268,8 +268,8 @@ Here is the search and draw box result for test image and heat map.
 ### Video Implementation
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video    
-Here's a [link to my video result](./project_output.mp4)
-And the video added the lane-finding algorithm [link to my video result](./project_output_final.mp4)
+Here's a [link to my video result](./project_output.mp4)    
+And the video added the lane-finding algorithm [link to my video result](./project_output_final.mp4)    
 
 #### 2. Describe how you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
