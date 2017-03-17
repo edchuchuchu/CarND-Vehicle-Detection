@@ -94,11 +94,11 @@ The following 2 images show the HOG image from vehicle and non-vehicle image.
 Here is the parameter I use for final result.
 ```python
 color_space = 'YCrCb' # Can be RGB, HSV, LUV++, HLS, YUV+, YCrCb+++
-orient = 9  # HOG orientations
-pix_per_cell = 8 # HOG pixels per cell
+orient = 11  # HOG orientations
+pix_per_cell = 16 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
 hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
-spatial_size = (32, 32) # Spatial binning dimensions
+spatial_size = (16, 16) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
@@ -112,6 +112,8 @@ So I try several different color space and found out YCrCb will provide the most
 Third, hog_channel. Since we already know all of the 3 channel of YCrCb are useful. We will use all the channel for hog_channel.   
 Fourth, spatial size and hist bins. At the beginning, I use 16x16 and 16 for my first try. But the accuracy isn't good enough.   
 Because it will ignore too much info from original 64x64 image. After little tweak, I use spatial=32x32 and bin=32.   
+After first review, I change orient from 9 to 11, pix_per_cell from 8 to 16, spatial_size back to 16x16.    
+It still perform well and decrease run time a lot.
 
 #### 3. Describe how you trained a classifier using your selected HOG features.
 
