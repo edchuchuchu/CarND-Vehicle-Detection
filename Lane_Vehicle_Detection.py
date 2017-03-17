@@ -21,8 +21,9 @@ from Vehicle_Detection import *
 def pipeline(img):
     global left, right
     img = np.copy(img)
+    mtx, dist = load_cal_camera()
     # Transform undistort pic to "birds-eye view" with thresholded binary image
-    warped, Minv = perspective_color_thresh(img)
+    warped, Minv = perspective_color_thresh(img, mtx, dist)
     
     # Find the fit for the current image either sliding windows or use previous data as base
     if not left.detected and not right.detected:

@@ -31,15 +31,10 @@ from moviepy.editor import VideoFileClip
 from IPython.display import HTML
 #%matplotlib qt
 #%matplotlib inline
-######################################## Camera calibration #########################################################
-# prepare object points
-nx = 9 #the number of inside corners in x
-ny = 6 #the number of inside corners in y
-
-# Read in an image
-images = glob.glob('camera_cal/calibration*.jpg')
+######################################## Camera Calibration #########################################################
 
 def cal_camera(images, nx, ny):
+    print("Start work on Camera Calibration...")
     # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
     objp = np.zeros((ny*nx,3), np.float32)
     objp[:,:2] = np.mgrid[0:nx, 0:ny].T.reshape(-1,2)
@@ -63,8 +58,40 @@ def cal_camera(images, nx, ny):
             # Draw and display the corners
             cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[:2], None, None)
+    print("Finish Camera Calibration!")
     return mtx, dist
-mtx, dist = cal_camera(images, nx, ny)
+
+def save_cal_camera():
+	'''
+	Save Camera Calibration result
+	'''
+	# prepare object points
+	nx = 9 #the number of inside corners in x
+	ny = 6 #the number of inside corners in y
+
+	# Read in an image
+	images = glob.glob('camera_cal/calibration*.jpg')	
+	mtx, dist = cal_camera(images, nx, ny)
+	
+	# Save to pickle
+	dist_pickle = {}
+	dist_pickle["mtx"] = mtx
+	dist_pickle["dist"] = dist	
+	pickle.dump(dist_pickle, open("cal_camera.p", "wb"))
+
+# Camera Calibration	
+# save_cal_camera()	
+	
+def load_cal_camera():
+	'''
+	Load Camera Calibration result
+	'''	
+	dist_pickle = pickle.load( open("cal_camera.p", "rb" ) )
+	mtx = dist_pickle["mtx"]
+	dist = dist_pickle["dist"]
+	
+	return mtx, dist
+	
 ####################################### Distortion correction ##########################################	
 def cal_undistort(img, mtx, dist):
     # Use cv2.undistort()
@@ -189,7 +216,7 @@ def perspective_transform(img):
     warped = cv2.warpPerspective(img, M, (WIDTH, HEIGHT), flags=cv2.INTER_LINEAR)
     return warped, Minv	
 
-def perspective_color_thresh(img):
+def perspective_color_thresh(img, mtx, dist):
     img = np.copy(img)
     undist = cal_undistort(img, mtx, dist)
     warped, Minv = perspective_transform(undist)
@@ -474,9 +501,10 @@ def is_parallel(fit1, fit2, thresh=(0.0003, 0.1)):
 ##################################### Pipeline ###########################################################
 def pipeline(img):
     global left, right
+    mtx, dist = load_cal_camera()
     img = np.copy(img)
     # Transform undistort pic to "birds-eye view" with thresholded binary image
-    warped, Minv = perspective_color_thresh(img)
+    warped, Minv = perspective_color_thresh(img, mtx, dist)
     
     # Find the fit for the current image either sliding windows or use previous data as base
     if not left.detected and not right.detected:
@@ -523,7 +551,7 @@ if __name__ == "__main__":
 	global left,right	
 	left = Line()
 	right = Line()
-	project_output = 'test_output.mp4'
-	clip2 = VideoFileClip('test_video.mp4')
+	project_output = 'project_output.mp4'
+	clip2 = VideoFileClip('project_video.mp4')
 	project_clip = clip2.fl_image(pipeline)	
 	project_clip.write_videofile(project_output, audio=False)
